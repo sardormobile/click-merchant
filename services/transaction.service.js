@@ -53,7 +53,7 @@ class TransactionService {
       };
     }
 
-    const isAlreadyPaid = await this.repo.getByFilter({
+    const isAlreadyPaid = await transactionRepo.getByFilter({
       userId,
       productId,
       status: TransactionStatus.Paid,
@@ -65,7 +65,7 @@ class TransactionService {
       };
     }
 
-    const user = await this.userRepo.getById(userId);
+    const user = await userRepo.getById(userId);
     if (!user) {
       return {
         error: ClickError.UserNotFound,
@@ -73,7 +73,7 @@ class TransactionService {
       };
     }
 
-    const product = await this.productRepo.getById(productId);
+    const product = await productRepo.getById(productId);
     if (!product) {
       return {
         error: ClickError.BadRequest,
@@ -88,7 +88,7 @@ class TransactionService {
       };
     }
 
-    const transaction = await this.repo.getById(transId);
+    const transaction = await transactionRepo.getById(transId);
     if (transaction && transaction.status === TransactionStatus.Canceled) {
       return {
         error: ClickError.TransactionCanceled,
@@ -98,7 +98,7 @@ class TransactionService {
 
     const time = new Date().getTime();
 
-    await this.repo.create({
+    await transactionRepo.create({
       id: transId,
       user_id: userId,
       product_id: productId,
@@ -156,7 +156,7 @@ class TransactionService {
       };
     }
 
-    const user = await this.userRepo.getById(userId);
+    const user = await userRepo.getById(userId);
     if (!user) {
       return {
         error: ClickError.UserNotFound,
@@ -164,7 +164,7 @@ class TransactionService {
       };
     }
 
-    const product = await this.productRepo.getById(productId);
+    const product = await productRepo.getById(productId);
     if (!product) {
       return {
         error: ClickError.BadRequest,
@@ -172,7 +172,7 @@ class TransactionService {
       };
     }
 
-    const isPrepared = await this.repo.getByFilter({
+    const isPrepared = await transactionRepo.getByFilter({
       prepare_id: prepareId,
     });
     if (!isPrepared) {
@@ -182,7 +182,7 @@ class TransactionService {
       };
     }
 
-    const isAlreadyPaid = await this.repo.getByFilter({
+    const isAlreadyPaid = await transactionRepo.getByFilter({
       userId,
       productId,
       status: TransactionStatus.Paid,
@@ -201,7 +201,7 @@ class TransactionService {
       };
     }
 
-    const transaction = await this.repo.getById(transId);
+    const transaction = await transactionRepo.getById(transId);
     if (transaction && transaction.status === TransactionStatus.Canceled) {
       return {
         error: ClickError.TransactionCanceled,
@@ -212,7 +212,7 @@ class TransactionService {
     const time = new Date().getTime();
 
     if (error < 0) {
-      await this.repo.updateById(transId, {
+      await transactionRepo.updateById(transId, {
         status: TransactionStatus.Canceled,
         cancel_time: time,
       });
@@ -223,7 +223,7 @@ class TransactionService {
       };
     }
 
-    await this.repo.updateById(transId, {
+    await transactionRepo.updateById(transId, {
       status: TransactionStatus.Paid,
       perform_time: time,
     });

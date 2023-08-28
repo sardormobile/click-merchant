@@ -23,6 +23,7 @@ exports.checkClickSignature = (data, signString) => {
     .createHash("md5")
     .update(signature)
     .digest("hex");
-
+    console.log(`signatureHash: ${signatureHash}`);
+    console.log(`signString: ${signString}`);
   return signatureHash === signString;
 };
