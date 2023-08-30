@@ -22,10 +22,8 @@ class TransactionService {
     const {
       click_trans_id: transId,
       service_id: serviceId,
-      merchant_trans_id: userId,
-      additional_param3: productId,
-      //merchant_trans_id: productId,//userId,
-      //merchant_trans_id: userId,//additional_param3
+      merchant_trans_id: productId,//userId,
+      merchant_trans_id: userId,//additional_param3
       amount,
       action,
       sign_time: signTime,
@@ -55,13 +53,13 @@ class TransactionService {
         error_note: "Action not found",
       };
     }
-    const user = await userRepo.getById(userId);
-    if (!user) {
-      return {
-        error: ClickError.UserNotFound,
-        error_note: "User not found",
-      };
-    }
+    //const user = await userRepo.getById(userId);
+    //if (!user) {
+    //  return {
+    //    error: ClickError.UserNotFound,
+    //    error_note: "User not found",
+    //  };
+    //}
 
     if (productId.length > 24) return {
       error: ClickError.UserNotFound,//BadRequest,
@@ -130,10 +128,8 @@ class TransactionService {
     const {
       click_trans_id: transId,
       service_id: serviceId,
-      merchant_trans_id: userId,
-      additional_param3: productId,
-      //merchant_trans_id: productId,//userId,
-      //merchant_trans_id: userId,//additional_param3
+      merchant_trans_id: productId,//userId,
+      merchant_trans_id: userId,//additional_param3
       merchant_prepare_id: prepareId,
       amount,
       action,
@@ -167,13 +163,13 @@ class TransactionService {
       };
     }
     
-    const user = await userRepo.getById(userId);
-    if (!user) {
-      return {
-        error: ClickError.UserNotFound,
-        error_note: "User not found",
-      };
-    }
+    //const user = await userRepo.getById(userId);
+    //if (!user) {
+    //  return {
+    //    error: ClickError.UserNotFound,
+    //    error_note: "User not found",
+    //  };
+    //}
     const product = await productRepo.getById(productId);
     if (!product) {
       return {
