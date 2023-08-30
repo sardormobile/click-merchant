@@ -22,7 +22,7 @@ class TransactionService {
     const {
       click_trans_id: transId,
       service_id: serviceId,
-      merchant_trans_id: userId,
+      transaction_param: userId,
       additional_param3: productId,
       //merchant_trans_id: productId,//userId,
       //merchant_trans_id: userId,//additional_param3
@@ -108,7 +108,7 @@ class TransactionService {
     
     await transactionRepo.create({
       id: transId,
-      merchant_trans_id: userId,
+      transaction_param: userId,
       additional_param3: productId,
       status: TransactionStatus.Pending,
       create_time: time,
@@ -118,7 +118,7 @@ class TransactionService {
 
     return {
       click_trans_id: transId,
-      merchant_trans_id: userId,
+      transaction_param: userId,
       merchant_prepare_id: time,
       error: ClickError.Success,
       error_note: "Success",
@@ -130,7 +130,7 @@ class TransactionService {
     const {
       click_trans_id: transId,
       service_id: serviceId,
-      merchant_trans_id: userId,
+      transaction_param: userId,
       additional_param3: productId,
       //merchant_trans_id: productId,//userId,
       //merchant_trans_id: userId,//additional_param3
@@ -207,7 +207,7 @@ class TransactionService {
       };
     }
     const isAlreadyPaid = await transactionRepo.getByFilter({
-      merchant_trans_id:userId,
+      transaction_param:userId,
       additional_param3:productId,
       status: TransactionStatus.Paid,
     });
@@ -239,7 +239,7 @@ class TransactionService {
 
     return {
       click_trans_id: transId,
-      merchant_trans_id: userId,
+      transaction_param: userId,
       merchant_confirm_id: time,
       error: ClickError.Success,
       error_note: "Success",
