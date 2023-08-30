@@ -7,7 +7,6 @@ class TransactionController {
   async prepare(req, res, next) {
     try {
       const data = req.body;
-      console.log(`prepare body: ${data}`)
       
       const result = await transactionService.prepare(data);
 
@@ -26,7 +25,6 @@ class TransactionController {
   async complete(req, res, next) {
     try {
       const data = req.body;
-      console.log(`complete body: ${data}`)
       const result = await transactionService.complete(data);
 
       res

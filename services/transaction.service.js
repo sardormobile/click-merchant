@@ -18,11 +18,14 @@ class TransactionService {
   }
 
   async prepare(data) {
+    //console.log(`prepare body: ${JSON.stringify(data, null, 3)}`)
     const {
       click_trans_id: transId,
       service_id: serviceId,
       merchant_trans_id: userId,
-      product_id: productId,
+      additional_param3: productId,
+      //merchant_trans_id: productId,//userId,
+      //merchant_trans_id: userId,//additional_param3
       amount,
       action,
       sign_time: signTime,
@@ -52,6 +55,26 @@ class TransactionService {
         error_note: "Action not found",
       };
     }
+    const user = await userRepo.getById(userId);
+    if (!user) {
+      return {
+        error: ClickError.UserNotFound,
+        error_note: "User not found",
+      };
+    }
+
+    if (productId.length > 24) return {
+      error: ClickError.UserNotFound,//BadRequest,
+      error_note: "Product not found",
+    };
+
+    const product = await productRepo.getById(productId);
+    if (!product) {
+      return {
+        error: ClickError.UserNotFound,//BadRequest,
+        error_note: "Product not found",
+      };
+    }
 
     const isAlreadyPaid = await transactionRepo.getByFilter({
       userId,
@@ -62,22 +85,6 @@ class TransactionService {
       return {
         error: ClickError.AlreadyPaid,
         error_note: "Already paid",
-      };
-    }
-
-    const user = await userRepo.getById(userId);
-    if (!user) {
-      return {
-        error: ClickError.UserNotFound,
-        error_note: "User not found",
-      };
-    }
-
-    const product = await productRepo.getById(productId);
-    if (!product) {
-      return {
-        error: ClickError.BadRequest,
-        error_note: "Product not found",
       };
     }
 
@@ -97,11 +104,12 @@ class TransactionService {
     }
 
     const time = new Date().getTime();
-
+    
+    
     await transactionRepo.create({
       id: transId,
-      user_id: userId,
-      product_id: productId,
+      merchant_trans_id: userId,
+      additional_param3: productId,
       status: TransactionStatus.Pending,
       create_time: time,
       amount,
@@ -118,11 +126,14 @@ class TransactionService {
   }
 
   async complete(data) {
+    //console.log(`complete body: ${JSON.stringify(data, null, 3)}`)
     const {
       click_trans_id: transId,
       service_id: serviceId,
       merchant_trans_id: userId,
-      product_id: productId,
+      additional_param3: productId,
+      //merchant_trans_id: productId,//userId,
+      //merchant_trans_id: userId,//additional_param3
       merchant_prepare_id: prepareId,
       amount,
       action,
@@ -155,7 +166,7 @@ class TransactionService {
         error_note: "Action not found",
       };
     }
-
+    
     const user = await userRepo.getById(userId);
     if (!user) {
       return {
@@ -163,11 +174,10 @@ class TransactionService {
         error_note: "User not found",
       };
     }
-
     const product = await productRepo.getById(productId);
     if (!product) {
       return {
-        error: ClickError.BadRequest,
+        error: ClickError.UserNotFound,//BadRequest,
         error_note: "Product not found",
       };
     }
@@ -181,16 +191,12 @@ class TransactionService {
         error_note: "Transaction not found",
       };
     }
-
-    const isAlreadyPaid = await transactionRepo.getByFilter({
-      userId,
-      productId,
-      status: TransactionStatus.Paid,
-    });
-    if (isAlreadyPaid) {
+    
+    const transaction = await transactionRepo.getById(transId);
+    if (transaction && transaction.status === TransactionStatus.Canceled) {
       return {
-        error: ClickError.AlreadyPaid,
-        error_note: "Already paid for course",
+        error: ClickError.TransactionCanceled,
+        error_note: "Transaction canceled",
       };
     }
 
@@ -200,12 +206,15 @@ class TransactionService {
         error_note: "Incorrect parameter amount",
       };
     }
-
-    const transaction = await transactionRepo.getById(transId);
-    if (transaction && transaction.status === TransactionStatus.Canceled) {
+    const isAlreadyPaid = await transactionRepo.getByFilter({
+      merchant_trans_id:userId,
+      additional_param3:productId,
+      status: TransactionStatus.Paid,
+    });
+    if (isAlreadyPaid) {
       return {
-        error: ClickError.TransactionCanceled,
-        error_note: "Transaction canceled",
+        error: ClickError.AlreadyPaid,
+        error_note: "Already paid",
       };
     }
 

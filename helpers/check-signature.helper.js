@@ -7,7 +7,7 @@ exports.checkClickSignature = (data, signString) => {
     transId,
     serviceId,
     userId,
-    merchantPrepareId,
+    prepareId,
     amount,
     action,
     signTime,
@@ -15,9 +15,8 @@ exports.checkClickSignature = (data, signString) => {
 
   const CLICK_SECRET_KEY = environments.CLICK_SECRET_KEY;
 
-  const prepareId = merchantPrepareId || "";
-
-  const signature = `${transId}${serviceId}${CLICK_SECRET_KEY}${userId}${prepareId}${amount}${action}${signTime}`;
+  const checkedPrepareId = prepareId || "";
+  const signature = `${transId}${serviceId}${CLICK_SECRET_KEY}${userId}${checkedPrepareId}${amount}${action}${signTime}`;
 
   const signatureHash = crypto
     .createHash("md5")

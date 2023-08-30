@@ -2,15 +2,16 @@ const transactionModel = require("../models/transaction.model");
 
 class TransactionRepo {
   constructor(model) {
-    this.model = model;
+    this.model = transactionModel;
   }
 
   async create(data) {
-    await transactionModel.create(data);
+    await this.model.create(data);
   }
 
   async getById(transactionId) {
-    return transactionModel.findById(transactionId);
+    //return transactionModel.findById(transactionId.toString());
+    return transactionModel.findOne({id:transactionId});
   }
 
   async getByFilter(filter) {
@@ -18,7 +19,7 @@ class TransactionRepo {
   }
 
   async updateById(transactionId, update) {
-    return transactionModel.findByIdAndUpdate(transactionId, update);
+    return transactionModel.findOneAndUpdate({id:transactionId}, update);
   }
 }
 

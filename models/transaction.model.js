@@ -9,11 +9,11 @@ const transactionSchema = new Schema(
       type: String,
       required: true,
     },
-    user_id: {
+    merchant_trans_id: {//user_id
       type: String,
       required: true,
     },
-    product_id: {
+    additional_param3: {//product_id
       type: String,
       required: true,
     },
