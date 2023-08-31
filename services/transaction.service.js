@@ -22,6 +22,8 @@ class TransactionService {
     const {
       click_trans_id: transId,
       service_id: serviceId,
+      //merchant_trans_id: userId,
+      //additional_param3: productId,
       merchant_trans_id: productId,//userId,
       merchant_trans_id: userId,//additional_param3
       amount,
@@ -74,18 +76,6 @@ class TransactionService {
       };
     }
 
-    const isAlreadyPaid = await transactionRepo.getByFilter({
-      userId,
-      productId,
-      status: TransactionStatus.Paid,
-    });
-    if (isAlreadyPaid) {
-      return {
-        error: ClickError.AlreadyPaid,
-        error_note: "Already paid",
-      };
-    }
-
     if (parseInt(amount) !== product.price) {
       return {
         error: ClickError.InvalidAmount,
@@ -100,9 +90,18 @@ class TransactionService {
         error_note: "Transaction canceled",
       };
     }
-
+    const isAlreadyPaid = await transactionRepo.getByFilter({
+      id: userId,
+      additional_param3: productId,
+      status: TransactionStatus.Paid,
+    });
+    if (isAlreadyPaid) {
+      return {
+        error: ClickError.AlreadyPaid,
+        error_note: "Already paid",
+      };
+    }
     const time = new Date().getTime();
-    
     
     await transactionRepo.create({
       id: transId,
@@ -128,6 +127,8 @@ class TransactionService {
     const {
       click_trans_id: transId,
       service_id: serviceId,
+      //merchant_trans_id: userId,
+      //additional_param3: productId,
       merchant_trans_id: productId,//userId,
       merchant_trans_id: userId,//additional_param3
       merchant_prepare_id: prepareId,
@@ -162,7 +163,7 @@ class TransactionService {
         error_note: "Action not found",
       };
     }
-    
+
     //const user = await userRepo.getById(userId);
     //if (!user) {
     //  return {
@@ -170,14 +171,21 @@ class TransactionService {
     //    error_note: "User not found",
     //  };
     //}
+
     const product = await productRepo.getById(productId);
     if (!product) {
       return {
-        error: ClickError.UserNotFound,//BadRequest,
+        error: ClickError.BadRequest,
         error_note: "Product not found",
       };
     }
-
+    const transaction = await transactionRepo.getById(transId);
+    if (transaction && transaction.status === TransactionStatus.Canceled) {
+      return {
+        error: ClickError.TransactionCanceled,
+        error_note: "Transaction canceled",
+      };
+    }
     const isPrepared = await transactionRepo.getByFilter({
       prepare_id: prepareId,
     });
@@ -187,22 +195,9 @@ class TransactionService {
         error_note: "Transaction not found",
       };
     }
-    
-    const transaction = await transactionRepo.getById(transId);
-    if (transaction && transaction.status === TransactionStatus.Canceled) {
-      return {
-        error: ClickError.TransactionCanceled,
-        error_note: "Transaction canceled",
-      };
-    }
 
-    if (parseInt(amount) !== product.price) {
-      return {
-        error: ClickError.InvalidAmount,
-        error_note: "Incorrect parameter amount",
-      };
-    }
     const isAlreadyPaid = await transactionRepo.getByFilter({
+      id: transId,
       merchant_trans_id:userId,
       additional_param3:productId,
       status: TransactionStatus.Paid,
@@ -211,6 +206,13 @@ class TransactionService {
       return {
         error: ClickError.AlreadyPaid,
         error_note: "Already paid",
+      };
+    }
+
+    if (parseInt(amount) !== product.price) {
+      return {
+        error: ClickError.InvalidAmount,
+        error_note: "Incorrect parameter amount",
       };
     }
 
@@ -223,7 +225,7 @@ class TransactionService {
       });
 
       return {
-        error: ClickError.TransactionNotFound,
+        error: ClickError.TransactionCanceled,
         error_note: "Transaction not found",
       };
     }

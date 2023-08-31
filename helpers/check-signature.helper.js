@@ -14,7 +14,7 @@ exports.checkClickSignature = (data, signString) => {
   } = data;
 
   const CLICK_SECRET_KEY = environments.CLICK_SECRET_KEY;
-
+console.log(`userId: ${userId}`)
   const checkedPrepareId = prepareId || "";
   const signature = `${transId}${serviceId}${CLICK_SECRET_KEY}${userId}${checkedPrepareId}${amount}${action}${signTime}`;
 
