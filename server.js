@@ -5,8 +5,11 @@ const environments = require("./config/environments");
 const routes = require("./routes");
 const errorHandler = require("./middlewares/error-handler.middleware");
 const bodyParser = require('body-parser');
-const morgan = require('morgan')
 const app = express();
+
+var path = require('path');
+var fs = require('fs');
+const morgan = require('morgan');
 
 const PORT = environments.PORT;
 
@@ -14,13 +17,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use(morgan('tiny'));
 
 app.use("/api", routes);
 
 app.use(errorHandler);
 
 app.use(bodyParser.json());
+
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+ 
+// setup the logger
+app.use(morgan('combined', { stream: accessLogStream }))
 
 require("./config/database");
 
