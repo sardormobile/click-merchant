@@ -1,6 +1,7 @@
 const transactionRepo = require("../repositories/transaction.repo");
 const userRepo = require("../repositories/user.repo");
 const productRepo = require("../repositories/product.repo");
+const bodyParser = require('body-parser');
 
 const {
   ClickError,
@@ -18,7 +19,7 @@ class TransactionService {
   }
 
   async prepare(data) {
-    //console.log(`prepare body: ${JSON.stringify(data, null, 3)}`)
+    console.log(`prepare body: ${JSON.stringify(data, null, 3)}`)
     const {
       click_trans_id: transId,
       service_id: serviceId,
@@ -123,7 +124,7 @@ class TransactionService {
   }
 
   async complete(data) {
-    //console.log(`complete body: ${JSON.stringify(data, null, 3)}`)
+    console.log(`complete body: ${JSON.stringify(data, null, 3)}`)
     const {
       click_trans_id: transId,
       service_id: serviceId,

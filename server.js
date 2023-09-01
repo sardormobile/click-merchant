@@ -4,7 +4,7 @@ const cors = require("cors");
 const environments = require("./config/environments");
 const routes = require("./routes");
 const errorHandler = require("./middlewares/error-handler.middleware");
-
+const bodyParser = require('body-parser');
 const app = express();
 
 const PORT = environments.PORT;
@@ -16,6 +16,8 @@ app.use(cors());
 app.use("/api", routes);
 
 app.use(errorHandler);
+
+app.use(bodyParser.json());
 
 require("./config/database");
 
