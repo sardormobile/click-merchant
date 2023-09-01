@@ -5,6 +5,7 @@ const environments = require("./config/environments");
 const routes = require("./routes");
 const errorHandler = require("./middlewares/error-handler.middleware");
 const bodyParser = require('body-parser');
+const morgan = require('morgan')
 const app = express();
 
 const PORT = environments.PORT;
@@ -12,6 +13,8 @@ const PORT = environments.PORT;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+app.use(morgan('tiny'));
 
 app.use("/api", routes);
 
