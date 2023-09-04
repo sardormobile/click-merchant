@@ -107,7 +107,7 @@ class TransactionService {
     await transactionRepo.create({
       id: transId,
       product: productId,
-      merchant_trans_id: userId,//param2
+      user: userId,//param2
       status: TransactionStatus.Pending,
       create_time: time,
       amount,
