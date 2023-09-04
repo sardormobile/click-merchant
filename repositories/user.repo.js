@@ -6,7 +6,7 @@ class UserRepo {
   }
 
   async getById(userId) {
-    return userModel.findById(userId);
+    return userModel.findOne({phone:userId});
   }
 }
 

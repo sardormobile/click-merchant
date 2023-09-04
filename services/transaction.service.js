@@ -23,10 +23,10 @@ class TransactionService {
     const {
       click_trans_id: transId,
       service_id: serviceId,
-      //merchant_trans_id: userId,
-      //additional_param3: productId,
-      merchant_trans_id: productId,//userId,
-      merchant_trans_id: userId,//additional_param3
+      merchant_trans_id: productId,
+      param2: userId,//param2
+      //merchant_trans_id: productId,//userId,
+      //merchant_trans_id: userId,//additional_param3
       amount,
       action,
       sign_time: signTime,
@@ -56,13 +56,13 @@ class TransactionService {
         error_note: "Action not found",
       };
     }
-    //const user = await userRepo.getById(userId);
-    //if (!user) {
-    //  return {
-    //    error: ClickError.UserNotFound,
-    //    error_note: "User not found",
-    //  };
-    //}
+    const user = await userRepo.getById(userId);
+    if (!user) {
+      return {
+        error: ClickError.UserNotFound,
+        error_note: "User not found",
+      };
+    }
 
     if (productId.length > 24) return {
       error: ClickError.UserNotFound,//BadRequest,
@@ -93,7 +93,7 @@ class TransactionService {
     }
     const isAlreadyPaid = await transactionRepo.getByFilter({
       id: userId,
-      additional_param3: productId,
+      product: productId,//param2
       status: TransactionStatus.Paid,
     });
     if (isAlreadyPaid) {
@@ -106,8 +106,8 @@ class TransactionService {
     
     await transactionRepo.create({
       id: transId,
-      merchant_trans_id: userId,
-      additional_param3: productId,
+      product: productId,
+      user: userId,//param2
       status: TransactionStatus.Pending,
       create_time: time,
       amount,
@@ -116,7 +116,7 @@ class TransactionService {
 
     return {
       click_trans_id: transId,
-      merchant_trans_id: userId,
+      merchant_trans_id: userId,//param2
       merchant_prepare_id: time,
       error: ClickError.Success,
       error_note: "Success",
@@ -128,10 +128,10 @@ class TransactionService {
     const {
       click_trans_id: transId,
       service_id: serviceId,
-      //merchant_trans_id: userId,
-      //additional_param3: productId,
-      merchant_trans_id: productId,//userId,
-      merchant_trans_id: userId,//additional_param3
+      merchant_trans_id: productId,
+      param2: userId,//param2
+      //merchant_trans_id: productId,//userId,
+      //merchant_trans_id: userId,//additional_param3
       merchant_prepare_id: prepareId,
       amount,
       action,
@@ -165,13 +165,13 @@ class TransactionService {
       };
     }
 
-    //const user = await userRepo.getById(userId);
-    //if (!user) {
-    //  return {
-    //    error: ClickError.UserNotFound,
-    //    error_note: "User not found",
-    //  };
-    //}
+    const user = await userRepo.getById(userId);
+    if (!user) {
+      return {
+        error: ClickError.UserNotFound,
+        error_note: "User not found",
+      };
+    }
 
     const product = await productRepo.getById(productId);
     if (!product) {
@@ -199,8 +199,8 @@ class TransactionService {
 
     const isAlreadyPaid = await transactionRepo.getByFilter({
       id: transId,
-      merchant_trans_id:userId,
-      additional_param3:productId,
+      product:productId,
+      user:userId,//param2
       status: TransactionStatus.Paid,
     });
     if (isAlreadyPaid) {
@@ -238,7 +238,7 @@ class TransactionService {
 
     return {
       click_trans_id: transId,
-      merchant_trans_id: userId,
+      merchant_trans_id: userId,//param2
       merchant_confirm_id: time,
       error: ClickError.Success,
       error_note: "Success",

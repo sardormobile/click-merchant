@@ -6,7 +6,7 @@ class ProductRepo {
   }
 
   async getById(productId) {
-    return productModel.findById(productId);
+    return productModel.findOne({name:productId});
   }
 }
 
