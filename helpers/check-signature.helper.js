@@ -6,7 +6,7 @@ exports.checkClickSignature = (data, signString) => {
   const {
     transId,
     serviceId,
-    userId,
+    productId,
     prepareId,
     amount,
     action,
@@ -14,10 +14,9 @@ exports.checkClickSignature = (data, signString) => {
   } = data;
 
   const CLICK_SECRET_KEY = environments.CLICK_SECRET_KEY;
-console.log(`userId: ${userId}`)
+console.log(`userId: ${productId}`)
   const checkedPrepareId = prepareId || "";
-  const signature = `${transId}${serviceId}${CLICK_SECRET_KEY}${userId}${checkedPrepareId}${amount}${action}${signTime}`;
-
+  const signature = `${transId}${serviceId}${CLICK_SECRET_KEY}${productId}${checkedPrepareId}${amount}${action}${signTime}`;
   const signatureHash = crypto
     .createHash("md5")
     .update(signature)

@@ -36,7 +36,7 @@ class TransactionService {
     const signatureData = {
       transId,
       serviceId,
-      userId,
+      productId,
       amount,
       action,
       signTime,
@@ -107,7 +107,7 @@ class TransactionService {
     await transactionRepo.create({
       id: transId,
       product: productId,
-      user: userId,//param2
+      merchant_trans_id: userId,//param2
       status: TransactionStatus.Pending,
       create_time: time,
       amount,
@@ -143,7 +143,7 @@ class TransactionService {
     const signatureData = {
       transId,
       serviceId,
-      userId,
+      productId,
       prepareId,
       amount,
       action,
